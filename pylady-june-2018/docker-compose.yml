@@ -1,0 +1,53 @@
+version: '3.3'
+services:
+  contact:
+    image: johncarnell/contact:latest
+    ports:
+       - "5000:5000"
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    depends_on:
+      - "contactdb"
+
+  notifier:
+    image: johncarnell/notifier:latest
+    ports:
+       - "5010:5000"
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+    secrets:
+      - account_sid
+      - auth_token    
+    depends_on:
+      - "contact"            
+   
+  contactdb:
+    image: postgres:9.5
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "p0stgr@s"
+      POSTGRES_DB:       "contact_db"
+
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+
+secrets:
+  account_sid:
+    external: true
+  auth_token:
+    external: true      
+  
