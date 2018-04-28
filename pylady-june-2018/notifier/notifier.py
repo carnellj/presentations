@@ -13,6 +13,7 @@ from logging.handlers import RotatingFileHandler
 app = Flask(__name__)
 
 account_sid = ""
+
 auth_token  = ""
 
 @app.before_first_request
@@ -40,8 +41,6 @@ def initialize_logging():
         app.logger.setLevel(log_level)
         app.logger.info('Logging handler established')
 
-    account_sid = get_secret("account_sid")
-    auth_token  = get_secret("auth_token")
    
 def get_secret(secret_name):
     try:
@@ -72,6 +71,7 @@ def notify():
      lastName    = contact["lastName"]
      phoneNumber = "+{}".format(contact["phoneNumber"])
      message     = "Hi {} {}.  Your appointment is upcoming".format(firstName,lastName)  
+     app.logger.info("ACCOUNT_SID {}".format(account_sid))
      client = Client(account_sid, auth_token)
      message = client.api.account.messages.create(
        to=phoneNumber,
@@ -83,6 +83,8 @@ def notify():
      #print(message.sid)     
 
 if __name__ == '__main__':
+   account_sid = get_secret("account_sid")
+   auth_token  = get_secret("auth_token")
    app.run(debug=True,host='0.0.0.0', port=5010)
 
     

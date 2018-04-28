@@ -17,7 +17,7 @@ services:
   notifier:
     image: johncarnell/notifier:latest
     ports:
-       - "5010:5000"
+       - "5010:5010"
     deploy:
       replicas: 2
       update_config:
