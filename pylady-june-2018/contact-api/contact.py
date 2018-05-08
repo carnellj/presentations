@@ -26,11 +26,15 @@ def get_all_contacts():
    contacts =  contactDB.getAll()
    return jsonify(contacts), 200    
 
-
 @app.route("/api/v1.0/groups", methods=['GET'])
 def get_all_groups():
    groups =  groupDB.getAll()
    return jsonify(groups), 200    
+
+@app.route('/api/v1.0/contacts/groups/<groupId>', methods=['GET'])
+def get_contact_by_group(groupId):
+    contacts  = contactDB.getAllByGroupId( groupId ) 
+    return  jsonify(contacts), 200  
 
 def loadSeedData():
     groupId = groupDB.create("Telstra Financial Services 401K Managers", "Call Center Managers")

@@ -2,6 +2,7 @@ import uuid
 import psycopg2
 
 class ContactDB:
+    ##Need to put this in a secret
     def __init__(self):
          self.conn =  psycopg2.connect(user="postgres", password="p0stgr@s",dbname="contact_db", host="contactdb")
          
@@ -37,6 +38,21 @@ class ContactDB:
         result["lastName"]  = dbresult[2]
         result["phone"]     = dbresult[3]
         return result 
+
+    def getAllByGroupId(self,groupId):
+        cursor = self.conn.cursor() 
+        cursor.execute("SELECT * FROM contacts WHERE group_id = %(groupId)s",    {'groupId': groupId})
+        results = []
+
+        for record in cursor:
+          result = {}
+          result["contactId"] = record[0]
+          result["firstName"] = record[1]
+          result["lastName"]  = record[2]
+          result["phone"]     = record[3]
+          result["groupId"]   = record[4]
+          results.append(result)
+        return results 
 
     def getAll(self):
         cursor = self.conn.cursor()

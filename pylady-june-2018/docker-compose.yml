@@ -5,7 +5,7 @@ services:
     ports:
        - "5000:5000"
     deploy:
-      replicas: 2
+      replicas: 1
       update_config:
         parallelism: 2
         delay: 10s
@@ -49,5 +49,4 @@ secrets:
   account_sid:
     external: true
   auth_token:
-    external: true      
-  
+    external: true
