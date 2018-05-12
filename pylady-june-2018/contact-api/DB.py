@@ -36,7 +36,7 @@ class ContactDB:
         result["contactId"] = contactId
         result["firstName"] = dbresult[1]
         result["lastName"]  = dbresult[2]
-        result["phone"]     = dbresult[3]
+        result["phoneNumber"]     = dbresult[3]
         return result 
 
     def getAllByGroupId(self,groupId):
@@ -49,7 +49,7 @@ class ContactDB:
           result["contactId"] = record[0]
           result["firstName"] = record[1]
           result["lastName"]  = record[2]
-          result["phone"]     = record[3]
+          result["phoneNumber"]     = record[3]
           result["groupId"]   = record[4]
           results.append(result)
         return results 
@@ -64,7 +64,7 @@ class ContactDB:
           result["contactId"] = record[0]
           result["firstName"] = record[1]
           result["lastName"]  = record[2]
-          result["phone"]     = record[3]
+          result["phoneNumber"]     = record[3]
           result["groupId"]   = record[4]
           results.append(result)
         return results      

@@ -10,7 +10,7 @@ services:
         parallelism: 2
         delay: 10s
       restart_policy:
-        condition: on-failure
+        condition: on-failure    
     depends_on:
       - "contactdb"
 
@@ -19,17 +19,17 @@ services:
     ports:
        - "5010:5010"
     deploy:
-      replicas: 2
+      replicas: 1
       update_config:
         parallelism: 2
         delay: 10s
       restart_policy:
-        condition: on-failure
+        condition: on-failure    
     secrets:
       - account_sid
       - auth_token    
     depends_on:
-      - "contact"            
+      - "contact"      
    
   contactdb:
     image: postgres:9.5

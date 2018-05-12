@@ -4,7 +4,6 @@ from twilio.rest import Client
 import urllib
 import urllib3
 import time
-import cgi
 import logging
 import sys
 from logging.handlers import RotatingFileHandler
@@ -13,7 +12,6 @@ from logging.handlers import RotatingFileHandler
 app = Flask(__name__)
 
 account_sid = ""
-
 auth_token  = ""
 
 @app.before_first_request
@@ -79,7 +77,7 @@ def notify():
        body=message)
    
      sendVoiceCall('+19206541198',phoneNumber,firstName,lastName)
-     return "ok"
+     return jsonify({"status": "call successful"}),200
      #print(message.sid)     
 
 if __name__ == '__main__':
