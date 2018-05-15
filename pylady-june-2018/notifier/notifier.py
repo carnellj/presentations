@@ -1,8 +1,7 @@
 #/usr/local/bin/python3
 from flask import Flask, jsonify, request
 from twilio.rest import Client
-import urllib
-import urllib3
+from urllib.parse import quote
 import time
 import logging
 import sys
@@ -47,14 +46,15 @@ def get_secret(secret_name):
     except IOError:
         return None
 
-def sendVoiceCall(fromPhoneNumber, toPhoneNumber, firstName, lastName):
+def sendVoiceCall(fromPhoneNumber, toPhoneNumber, firstName, lastName,msgText):
    client = Client(account_sid, auth_token)
    ts = time.gmtime()
-   url="https://handler.twilio.com/twiml/EHf4b0efd9b7ea4c7c3531baf5ff88e9a3?firstName={}&lastName={}&appointment='{}'".format(firstName,lastName, urllib.parse.quote_plus(time.strftime("%c", ts), safe='', encoding=None, errors=None))
+   #url="https://handler.twilio.com/twiml/EHf4b0efd9b7ea4c7c3531baf5ff88e9a3?firstName={}&lastName={}&appointment='{}'".format(firstName,lastName, urllib.parse.quote_plus(time.strftime("%c", ts), safe='', encoding=None, errors=None))
+   msg=quote(msgText,safe='')
    call = client.calls.create(
     to=toPhoneNumber,
     from_=fromPhoneNumber,
-    url="https://handler.twilio.com/twiml/EHf4b0efd9b7ea4c7c3531baf5ff88e9a3?firstName={}&lastName={}&appointment='{}'".format(firstName,lastName,url))
+    url="https://handler.twilio.com/twiml/EHf4b0efd9b7ea4c7c3531baf5ff88e9a3?firstName={}&lastName={}&msgText='{}'".format(firstName,lastName,msg))
 
     
 @app.route('/health/check')
@@ -68,7 +68,8 @@ def notify():
      firstName   = contact["firstName"]
      lastName    = contact["lastName"]
      phoneNumber = "+{}".format(contact["phoneNumber"])
-     message     = "Hi {} {}.  Your appointment is upcoming".format(firstName,lastName)  
+     msgText     = contact["msgText"]
+     message     = "Hi {} {}.  {}".format(firstName,lastName,msgText)  
      app.logger.info("ACCOUNT_SID {}".format(account_sid))
      client = Client(account_sid, auth_token)
      message = client.api.account.messages.create(
@@ -76,7 +77,7 @@ def notify():
        from_='+19206541198',
        body=message)
    
-     sendVoiceCall('+19206541198',phoneNumber,firstName,lastName)
+     sendVoiceCall('+19206541198',phoneNumber,firstName,lastName,msgText)
      return jsonify({"status": "call successful"}),200
      #print(message.sid)     
 

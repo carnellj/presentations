@@ -5,37 +5,49 @@ import json
 import time
 from httplib2 import Http
 import logging
+import os
 from logging.handlers import RotatingFileHandler
 
 app = Flask(__name__)
 
-contactDB = ContactDB()
-groupDB   = GroupDB()
+if "POSTGRES_USER" in os.environ or "POSTGRES_PASSWORD" in os.environ or "POSTGRES_HOSTNAME" in os.environ or "POSTGRES_DB"  in os.environ:
+    contactDB = ContactDB(os.environ["POSTGRES_USER"],
+                         os.environ["POSTGRES_PASSWORD"],
+                         os.environ["POSTGRES_DB"],
+                         os.environ["POSTGRES_HOSTNAME"]  )
+    groupDB = GroupDB(   os.environ["POSTGRES_USER"],
+                         os.environ["POSTGRES_PASSWORD"],
+                         os.environ["POSTGRES_DB"],
+                         os.environ["POSTGRES_HOSTNAME"]  )                      
+
+
+def init_logging():
+    print('Setting up logging...')
+ 
+    # Get the apps logging level or default to INFO
+    log_level = app.config.get('LOGGING_LEVEL')
+    if not log_level:
+      log_level = logging.INFO
+ 
+    # Set up default logging for submodules to use STDOUT
+    fmt = '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
+    logging.basicConfig(stream=sys.stdout, level=log_level, format=fmt)
+ 
+    # Make a new log handler that uses STDOUT
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(logging.Formatter(fmt))
+    handler.setLevel(log_level)
+ 
+    # Remove the Flask default handlers and use our own
+    del app.logger.handlers[:]
+    app.logger.addHandler(handler)
+    app.logger.setLevel(log_level)
+    app.logger.info('Logging handler established')
 
 @app.before_first_request
-def initialize_logging():
+def initservice():
     if not app.debug:
-        print('Setting up logging...')
- 
-        # Get the apps logging level or default to INFO
-        log_level = app.config.get('LOGGING_LEVEL')
-        if not log_level:
-            log_level = logging.INFO
- 
-        # Set up default logging for submodules to use STDOUT
-        fmt = '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
-        logging.basicConfig(stream=sys.stdout, level=log_level, format=fmt)
- 
-        # Make a new log handler that uses STDOUT
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setFormatter(logging.Formatter(fmt))
-        handler.setLevel(log_level)
- 
-        # Remove the Flask default handlers and use our own
-        del app.logger.handlers[:]
-        app.logger.addHandler(handler)
-        app.logger.setLevel(log_level)
-        app.logger.info('Logging handler established')
+      init_logging()
 
 @app.route('/health/check')
 def healthCheck():
@@ -68,12 +80,14 @@ def get_contact_by_group(groupId):
 
 @app.route('/api/v1.0/contacts/groups/<groupId>/notify', methods=['POST'])
 def post_contact_by_group(groupId):
-   
+    text = request.json["msgText"]
     for contact in contactDB.getAllByGroupId( groupId ): 
-         app.logger.info("Attempting to notify contact: {} {}".format(contact["firstName"],
-                                                                      contact["lastName"]))
-         time.sleep(4)
+         app.logger.info("Attempting to notify contact: {} {} with message {}".format(contact["firstName"],
+                                                                                   contact["lastName"],
+                                                                                   text ))
+         contact["msgText"] = text
          contactBody = json.dumps({"contacts": [contact]})
+         
         
          http_obj = Http(".cache")
          (resp, content) = http_obj.request(uri="http://notifier:5010/api/v1.0/notify",method='POST',body=contactBody, headers={'Content-type': 'application/json'})

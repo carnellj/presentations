@@ -3,8 +3,8 @@ import psycopg2
 
 class ContactDB:
     ##Need to put this in a secret
-    def __init__(self):
-         self.conn =  psycopg2.connect(user="postgres", password="p0stgr@s",dbname="contact_db", host="contactdb")
+    def __init__(self, _user, _password, _dbname, _host):
+         self.conn =  psycopg2.connect(user=_user, password=_password,dbname=_dbname, host=_host)
          
     def createContactTable(self):
         cursor = self.conn.cursor()
@@ -74,10 +74,9 @@ class ContactDB:
 
 
 class GroupDB:
-    def __init__(self):
-         self.conn =  psycopg2.connect(user="postgres", password="p0stgr@s",dbname="contact_db", host="contactdb")
+    def __init__(self, _user, _password, _dbname, _host):
+         self.conn =  psycopg2.connect(user=_user, password=_password,dbname=_dbname, host=_host)
          
-
     def createGroupTable(self):
         cursor = self.conn.cursor()
         cursor.execute("DROP TABLE IF EXISTS groups;")
