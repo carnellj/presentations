@@ -5,49 +5,33 @@ import json
 import time
 from httplib2 import Http
 import logging
+import utils
+import log
 import os
-from logging.handlers import RotatingFileHandler
 
+logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
-if "POSTGRES_USER" in os.environ or "POSTGRES_PASSWORD" in os.environ or "POSTGRES_HOSTNAME" in os.environ or "POSTGRES_DB"  in os.environ:
-    contactDB = ContactDB(os.environ["POSTGRES_USER"],
-                         os.environ["POSTGRES_PASSWORD"],
-                         os.environ["POSTGRES_DB"],
-                         os.environ["POSTGRES_HOSTNAME"]  )
-    groupDB = GroupDB(   os.environ["POSTGRES_USER"],
-                         os.environ["POSTGRES_PASSWORD"],
-                         os.environ["POSTGRES_DB"],
-                         os.environ["POSTGRES_HOSTNAME"]  )                      
-
-
-def init_logging():
-    print('Setting up logging...')
- 
-    # Get the apps logging level or default to INFO
-    log_level = app.config.get('LOGGING_LEVEL')
-    if not log_level:
-      log_level = logging.INFO
- 
-    # Set up default logging for submodules to use STDOUT
-    fmt = '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
-    logging.basicConfig(stream=sys.stdout, level=log_level, format=fmt)
- 
-    # Make a new log handler that uses STDOUT
-    handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(logging.Formatter(fmt))
-    handler.setLevel(log_level)
- 
-    # Remove the Flask default handlers and use our own
-    del app.logger.handlers[:]
-    app.logger.addHandler(handler)
-    app.logger.setLevel(log_level)
-    app.logger.info('Logging handler established')
-
 @app.before_first_request
-def initservice():
-    if not app.debug:
-      init_logging()
+def init_app():
+    logger.info("Initializing the contact service.")
+    global contactDB
+    global groupDB
+    contactDB = ContactDB(os.environ["POSTGRES_USER"],
+                             os.environ["POSTGRES_PASSWORD"],
+                             os.environ["POSTGRES_DB"],
+                             os.environ["POSTGRES_HOSTNAME"]  )
+    groupDB = GroupDB(   os.environ["POSTGRES_USER"],
+                             os.environ["POSTGRES_PASSWORD"],
+                              os.environ["POSTGRES_DB"],
+                             os.environ["POSTGRES_HOSTNAME"]  )  
+    contactDB.createContactTable()
+    groupDB.createGroupTable()  
+
+@app.after_request
+def per_request_callbacks(response):
+    response.headers['tmx-correlation-id']=str(utils.request_id())
+    return response                            
 
 @app.route('/health/check')
 def healthCheck():
@@ -55,26 +39,33 @@ def healthCheck():
 
 @app.route('/api/v1.0/contacts', methods=['POST'])
 def create_contact():
+    logger.debug("Creating a contact record:  FirstName: {}. LastName: {}. Phone {}. Group Id {}".format(
+        request.json["firstName"],request.json["lastName"],request.json["phone"], request.json("groupId")))
+
     contactId  = contactDB.create( request.json["firstName"],request.json["lastName"],request.json["phone"], request.json("groupId")) 
     return  jsonify({'contactId': contactId}), 201
 
 @app.route('/api/v1.0/contacts/<contactId>', methods=['GET'])
 def get_contact(contactId):
+    logger.debug("Retrieve contact {} from database.".format(contactId))
     contact  = contactDB.get( contactId) 
     return  jsonify(contact), 200
 
 @app.route("/api/v1.0/contacts", methods=['GET'])
 def get_all_contacts():
+   logger.debug("Retrieving al contacts in the database") 
    contacts =  contactDB.getAll()
    return jsonify(contacts), 200    
 
 @app.route("/api/v1.0/groups", methods=['GET'])
 def get_all_groups():
+   logger.info("Retrieving all groups from the /api/v1.0/groups method")
    groups =  groupDB.getAll()
    return jsonify(groups), 200    
 
 @app.route('/api/v1.0/contacts/groups/<groupId>', methods=['GET'])
 def get_contact_by_group(groupId):
+    logger.debug("Retrieving all contacts belong to group {}.".format(groupId))
     contacts  = contactDB.getAllByGroupId( groupId ) 
     return  jsonify(contacts), 200  
 
@@ -82,7 +73,7 @@ def get_contact_by_group(groupId):
 def post_contact_by_group(groupId):
     text = request.json["msgText"]
     for contact in contactDB.getAllByGroupId( groupId ): 
-         app.logger.info("Attempting to notify contact: {} {} with message {}".format(contact["firstName"],
+         logger.info("Attempting to notify contact: {} {} with message {}".format(contact["firstName"],
                                                                                    contact["lastName"],
                                                                                    text ))
          contact["msgText"] = text
@@ -90,7 +81,9 @@ def post_contact_by_group(groupId):
          
         
          http_obj = Http(".cache")
-         (resp, content) = http_obj.request(uri="http://notifier:5010/api/v1.0/notify",method='POST',body=contactBody, headers={'Content-type': 'application/json'})
+         (resp, content) = http_obj.request(uri="http://notifier:5010/api/v1.0/notify"
+              ,method='POST',body=contactBody, headers={'Content-type': 'application/json',
+                                                        'tmx-correlation-id': str(utils.request_id())})
 
          if (resp.status==200):
            app.logger.info("Retrieved content back from: {}".format(content.decode("utf-8")))
@@ -101,6 +94,7 @@ def post_contact_by_group(groupId):
 
 @app.route('/api/v1.0/contacts/seed', methods=['POST'])
 def post_load_seed_data():
+    logger.info("Loading the seed data into the database")
     loadSeedData()
     
     return  jsonify([]), 200  
@@ -117,6 +111,4 @@ def loadSeedData():
     contactId = contactDB.create("Dan", "Goerdt", "19202652322", groupId2) 
 
 if __name__ == '__main__':
-    contactDB.createContactTable()
-    groupDB.createGroupTable()
     app.run(debug=True,host='0.0.0.0')

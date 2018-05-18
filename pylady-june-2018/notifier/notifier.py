@@ -4,40 +4,16 @@ from twilio.rest import Client
 from urllib.parse import quote
 import time
 import logging
+import utils
+import log
 import sys
 from logging.handlers import RotatingFileHandler
 
-
+logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 account_sid = ""
 auth_token  = ""
-
-@app.before_first_request
-def initialize_logging():
-    if not app.debug:
-        print('Setting up logging...')
- 
-        # Get the apps logging level or default to INFO
-        log_level = app.config.get('LOGGING_LEVEL')
-        if not log_level:
-            log_level = logging.INFO
- 
-        # Set up default logging for submodules to use STDOUT
-        fmt = '[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
-        logging.basicConfig(stream=sys.stdout, level=log_level, format=fmt)
- 
-        # Make a new log handler that uses STDOUT
-        handler = logging.StreamHandler(sys.stdout)
-        handler.setFormatter(logging.Formatter(fmt))
-        handler.setLevel(log_level)
- 
-        # Remove the Flask default handlers and use our own
-        del app.logger.handlers[:]
-        app.logger.addHandler(handler)
-        app.logger.setLevel(log_level)
-        app.logger.info('Logging handler established')
-
    
 def get_secret(secret_name):
     try:
@@ -48,8 +24,6 @@ def get_secret(secret_name):
 
 def sendVoiceCall(fromPhoneNumber, toPhoneNumber, firstName, lastName,msgText):
    client = Client(account_sid, auth_token)
-   ts = time.gmtime()
-   #url="https://handler.twilio.com/twiml/EHf4b0efd9b7ea4c7c3531baf5ff88e9a3?firstName={}&lastName={}&appointment='{}'".format(firstName,lastName, urllib.parse.quote_plus(time.strftime("%c", ts), safe='', encoding=None, errors=None))
    msg=quote(msgText,safe='')
    call = client.calls.create(
     to=toPhoneNumber,
@@ -64,13 +38,19 @@ def healthCheck():
 @app.route('/api/v1.0/notify', methods=['POST'])
 def notify():
   contacts = request.json["contacts"]
+ 
   for contact in contacts:
+     logger.info("Received a request to notify {} {} at {} with message {}.".format(
+       contact["firstName"],
+       contact["lastName"],
+       contact["phoneNumber"],
+       contact["msgText"]))  
+
      firstName   = contact["firstName"]
      lastName    = contact["lastName"]
      phoneNumber = "+{}".format(contact["phoneNumber"])
      msgText     = contact["msgText"]
      message     = "Hi {} {}.  {}".format(firstName,lastName,msgText)  
-     app.logger.info("ACCOUNT_SID {}".format(account_sid))
      client = Client(account_sid, auth_token)
      message = client.api.account.messages.create(
        to=phoneNumber,
@@ -78,8 +58,7 @@ def notify():
        body=message)
    
      sendVoiceCall('+19206541198',phoneNumber,firstName,lastName,msgText)
-     return jsonify({"status": "call successful"}),200
-     #print(message.sid)     
+     return jsonify({"status": "call successful"}),200    
 
 if __name__ == '__main__':
    account_sid = get_secret("account_sid")

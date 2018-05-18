@@ -46,14 +46,15 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "p0stgr@s"
-      POSTGRES_DB:       "contact_db"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB:      "${POSTGRES_DB}" 
 
-  redis:
-    image: redis:alpine
-    ports:
-      - 6379:6379
+  logspout:
+    image: gliderlabs/logspout
+    command: syslog://logs5.papertrailapp.com:35178
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock    
 
 secrets:
   account_sid:
