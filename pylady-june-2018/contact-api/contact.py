@@ -12,20 +12,27 @@ import os
 logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
-@app.before_first_request
+#@app.before_first_request
 def init_app():
     logger.info("Initializing the contact service.")
     global contactDB
     global groupDB
+    logger.info("User: {}".format(os.environ["POSTGRES_USER"]))
+    logger.info("DB: {}".format( os.environ["POSTGRES_DB"]))
+    logger.info("HOST: {}".format( os.environ["POSTGRES_HOSTNAME"]))
+    logger.info("Creating the contact db connection")
     contactDB = ContactDB(os.environ["POSTGRES_USER"],
                              os.environ["POSTGRES_PASSWORD"],
                              os.environ["POSTGRES_DB"],
                              os.environ["POSTGRES_HOSTNAME"]  )
+    logger.info("Creating the groupdb connection")            
     groupDB = GroupDB(   os.environ["POSTGRES_USER"],
                              os.environ["POSTGRES_PASSWORD"],
                               os.environ["POSTGRES_DB"],
                              os.environ["POSTGRES_HOSTNAME"]  )  
+    logger.info("Creating the contact db table")                      
     contactDB.createContactTable()
+    logger.info("Creating the Group db table")         
     groupDB.createGroupTable()  
 
 @app.after_request
@@ -101,11 +108,13 @@ def post_load_seed_data():
 
 
 def loadSeedData():
+    init_app()
+    logger.info("Loading the first piece of group data.")
     groupId = groupDB.create("Telstra Financial Services 401K Managers", "Call Center Managers")
     contactId = contactDB.create("John", "Carnell", "19202651560", groupId)
     contactId = contactDB.create("Christopher", "Carnell", "19842425143", groupId) 
 
-
+    logger.info("Loading the second piece of group data.")
     groupId2 = groupDB.create("Schneider Trucking", "Schneider Trucking Executive Leadership Group")
     contactId = contactDB.create("Mike", "Mckhehan", "19202651555", groupId2)
     contactId = contactDB.create("Dan", "Goerdt", "19202652322", groupId2) 

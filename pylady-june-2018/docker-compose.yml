@@ -5,26 +5,28 @@ services:
     ports:
        - "5000:5000"
     deploy:
-      replicas: 1
+      endpoint_mode: vip
+      replicas: 3
       update_config:
         parallelism: 2
         delay: 10s
       restart_policy:
         condition: on-failure    
     depends_on:
-      - "contactdb"
+      - "contactdb"  
     environment:
-      POSTGRES_USER:     "${POSTGRES_USER}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-      POSTGRES_HOSTNAME: "${POSTGRES_HOSTNAME}"
-      POSTGRES_DB:       "${POSTGRES_DB}"  
+      POSTGRES_USER:     "postgres"
+      POSTGRES_PASSWORD: "p0stgr@s"
+      POSTGRES_HOSTNAME: "contactdb"
+      POSTGRES_DB:       "contact_db"  
 
   notifier:
     image: johncarnell/notifier:latest
     ports:
        - "5010:5010"
     deploy:
-      replicas: 1
+      endpoint_mode: vip
+      replicas: 3
       update_config:
         parallelism: 2
         delay: 10s
