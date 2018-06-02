@@ -106,7 +106,6 @@ def post_load_seed_data():
     
     return  jsonify([]), 200  
 
-
 def loadSeedData():
     init_app()
     logger.info("Loading the first piece of group data.")
