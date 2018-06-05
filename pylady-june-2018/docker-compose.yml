@@ -6,7 +6,7 @@ services:
        - "5000:5000"
     deploy:
       endpoint_mode: vip
-      replicas: 3
+      replicas: 1
       update_config:
         parallelism: 2
         delay: 10s
@@ -26,7 +26,7 @@ services:
        - "5010:5010"
     deploy:
       endpoint_mode: vip
-      replicas: 3
+      replicas: 1
       update_config:
         parallelism: 2
         delay: 10s

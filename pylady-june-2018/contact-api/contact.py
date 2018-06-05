@@ -46,10 +46,9 @@ def healthCheck():
 
 @app.route('/api/v1.0/contacts', methods=['POST'])
 def create_contact():
-    logger.debug("Creating a contact record:  FirstName: {}. LastName: {}. Phone {}. Group Id {}".format(
-        request.json["firstName"],request.json["lastName"],request.json["phone"], request.json("groupId")))
+    logger.debug("Creating a contact record:  FirstName: {}. LastName: {}. Phone {}. Group Id {}".format(request.json["firstName"],request.json["lastName"],request.json["phone"], request.json["groupId"]))
 
-    contactId  = contactDB.create( request.json["firstName"],request.json["lastName"],request.json["phone"], request.json("groupId")) 
+    contactId  = contactDB.create( request.json["firstName"],request.json["lastName"],request.json["phone"], request.json["groupId"]) 
     return  jsonify({'contactId': contactId}), 201
 
 @app.route('/api/v1.0/contacts/<contactId>', methods=['GET'])
