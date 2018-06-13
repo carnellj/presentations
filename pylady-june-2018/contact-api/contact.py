@@ -110,7 +110,7 @@ def loadSeedData():
     logger.info("Loading the first piece of group data.")
     groupId = groupDB.create("Telstra Financial Services 401K Managers", "Call Center Managers")
     contactId = contactDB.create("John", "Carnell", "19202651560", groupId)
-    contactId = contactDB.create("Christopher", "Carnell", "19842425143", groupId) 
+    contactId = contactDB.create("Christopher", "Carnell", "19842425143", groupId)
 
     logger.info("Loading the second piece of group data.")
     groupId2 = groupDB.create("Schneider Trucking", "Schneider Trucking Executive Leadership Group")
