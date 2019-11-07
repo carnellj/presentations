@@ -1,4 +1,4 @@
-Flask===0.12.2
+Flask===1.0
 twilio===6.10.5
 urllib3===1.22
 redis===2.10.6
