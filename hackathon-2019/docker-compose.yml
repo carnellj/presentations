@@ -1,0 +1,59 @@
+version: '3.3'
+services:
+  contact:
+    image: hackathon2019/contact:latest
+    ports:
+       - "5000:5000"
+    deploy:
+      endpoint_mode: vip
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure    
+    depends_on:
+      - "contactdb"  
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_HOSTNAME: "${POSTGRES_HOSTNAME}"
+      POSTGRES_DB: "${POSTGRES_DB}" 
+
+  notifier:
+    image: hackathon2019/notifier:latest
+    ports:
+       - "5010:5010"
+    deploy:
+      endpoint_mode: vip
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure    
+    secrets:
+      - account_sid
+      - auth_token    
+    depends_on:
+      - "contact"      
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_HOSTNAME: "${POSTGRES_HOSTNAME}"
+      POSTGRES_DB: "${POSTGRES_DB}"  
+   
+  contactdb:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB:      "${POSTGRES_DB}" 
+      
+secrets:
+  account_sid:
+    external: true
+  auth_token:
+    external: true

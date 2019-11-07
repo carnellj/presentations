@@ -1,0 +1,11 @@
+socks.py,sha256=woV5F-0vsQXxz-rQhc0v1TAsog2pyaz27L-yW8oisVo,32281
+sockshandler.py,sha256=ENwUUO3vt84_1yRHAq1A147TL_TAuFux2t_1QvNV2Vo,2913
+PySocks-1.6.8.dist-info/DESCRIPTION.rst,sha256=OCTuuN6LcWulhHS3d5rfjdsQtW22n7HENFRh6jC6ego,10
+PySocks-1.6.8.dist-info/METADATA,sha256=EIQaw2lnVQbxKK5Q4BGfhV0q2GL698q720D2tuiBw8g,494
+PySocks-1.6.8.dist-info/RECORD,,
+PySocks-1.6.8.dist-info/WHEEL,sha256=0mO7-aKM6K9CHeURc5NDYZyLWH5lmR-r4TtPinHxz7Y,93
+PySocks-1.6.8.dist-info/metadata.json,sha256=Wl19tMZJAJHZu-C8UrMCXKZEyWepxt9Q4bzidRRFQsk,675
+PySocks-1.6.8.dist-info/top_level.txt,sha256=TKSOIfCFBoK9EY8FBYbYqC3PWd3--G15ph9n8-QHPDk,19
+PySocks-1.6.8.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+__pycache__/sockshandler.cpython-36.pyc,,
+__pycache__/socks.cpython-36.pyc,,
