@@ -7,6 +7,7 @@ import logging
 import utils
 import log
 import sys
+import os
 from logging.handlers import RotatingFileHandler
 
 logger = logging.getLogger(__name__)
@@ -61,8 +62,8 @@ def notify():
      return jsonify({"status": "call successful"}),200    
 
 if __name__ == '__main__':
-   account_sid = get_secret("account_sid")
-   auth_token  = get_secret("auth_token")
+   account_sid = os.environ["TWILIO_SID"]
+   auth_token  = os.environ["TWILIO_TOKEN"]
    app.run(debug=True,host='0.0.0.0', port=5010)
 
     

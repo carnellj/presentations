@@ -8,6 +8,7 @@ import logging
 import utils
 import log
 import os
+import time
 
 logger = logging.getLogger(__name__)
 app = Flask(__name__)
@@ -91,6 +92,8 @@ def post_contact_by_group(groupId):
               ,method='POST',body=contactBody, headers={'Content-type': 'application/json',
                                                         'tmx-correlation-id': str(utils.request_id())})
 
+         time.sleep(.5)                                                
+
          if (resp.status==200):
            app.logger.info("Retrieved content back from: {}".format(content.decode("utf-8")))
          else:
@@ -116,6 +119,14 @@ def loadSeedData():
     groupId2 = groupDB.create("Schneider Trucking", "Schneider Trucking Executive Leadership Group")
     contactId = contactDB.create("Mike", "Mckhehan", "19202651555", groupId2)
     contactId = contactDB.create("Dan", "Goerdt", "19202652322", groupId2) 
+
+    logger.info("Loading the third group of data.")
+    groupId3 = groupDB.create("Schneider Trucking", "Edge Infrastructure Room")
+    contactId = contactDB.create("John", "Carnell", "19202651560", groupId3)
+    contactId = contactDB.create("Aidan", "Zimmermann", "19194411544", groupId3)
+    contactId = contactDB.create("Sean", "Xiao", "19193608657", groupId3)
+    contactId = contactDB.create("Brad", "Segiobiano", "19194279072", groupId3)
+
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
