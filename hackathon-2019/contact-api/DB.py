@@ -202,7 +202,7 @@ class RfidDB:
         conn.close()
         return result
 
-class MusicOptions:
+class MusicOptionDB:
     def __init__(self, _user, _password, _dbname, _host):
          self.user = _user
          self.password = _password
@@ -212,7 +212,7 @@ class MusicOptions:
     def getConn(self):
         return  psycopg2.connect(user=self.user, password=self.password,dbname=self.dbname, host=self.host)
 
-    def createMusicOptionsTable(self):
+    def createMusicOptionTable(self):
         conn = self.getConn()
         cursor = conn.cursor()
         cursor.execute("DROP TABLE IF EXISTS MusicOptions;")

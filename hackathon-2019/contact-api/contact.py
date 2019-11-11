@@ -1,6 +1,6 @@
 #/usr/local/bin/python3
 from flask import Flask, jsonify, request
-from DB import ContactDB,GroupDB
+from DB import ContactDB,GroupDB,RfidDB,MusicOptionDB
 import json
 import time
 from httplib2 import Http
@@ -18,6 +18,8 @@ def init_app():
     logger.info("Initializing the contact service.  ")
     global contactDB
     global groupDB
+    global rfidDB
+    global musicOptionDB
     logger.info("User: {}".format(os.environ["POSTGRES_USER"]))
     logger.info("DB: {}".format( os.environ["POSTGRES_DB"]))
     logger.info("HOST: {}".format( os.environ["POSTGRES_HOSTNAME"]))
@@ -31,10 +33,24 @@ def init_app():
                              os.environ["POSTGRES_PASSWORD"],
                               os.environ["POSTGRES_DB"],
                              os.environ["POSTGRES_HOSTNAME"])
+    logger.info("Creating the rfidDB connection")
+    rfidDB = RfidDB(os.environ["POSTGRES_USER"],
+                      os.environ["POSTGRES_PASSWORD"],
+                      os.environ["POSTGRES_DB"],
+                      os.environ["POSTGRES_HOSTNAME"])
+    logger.info("Creating the musicoOtiondb connection")
+    musicOptionDB = MusicOptionDB(os.environ["POSTGRES_USER"],
+                      os.environ["POSTGRES_PASSWORD"],
+                      os.environ["POSTGRES_DB"],
+                      os.environ["POSTGRES_HOSTNAME"])
     logger.info("Creating the contact db table")                      
     contactDB.createContactTable()
     logger.info("Creating the Group db table")         
-    groupDB.createGroupTable()  
+    groupDB.createGroupTable()
+    logger.info("Creating the RFID db table")
+    rfidDB.createRfidUsersTable()
+    logger.info("Creating the Music Options db table")
+    musicOptionDB.createMusicOptionTable()
 
 @app.after_request
 def per_request_callbacks(response):
