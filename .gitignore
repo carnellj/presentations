@@ -4,3 +4,6 @@
 .__pycache__/
 
 .DS_Store
+/pylady-june-2018/*
+/venv/
+/.idea/

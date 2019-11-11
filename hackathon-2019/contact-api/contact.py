@@ -25,12 +25,12 @@ def init_app():
     contactDB = ContactDB(os.environ["POSTGRES_USER"],
                              os.environ["POSTGRES_PASSWORD"],
                              os.environ["POSTGRES_DB"],
-                             os.environ["POSTGRES_HOSTNAME"]  )
+                             os.environ["POSTGRES_HOSTNAME"])
     logger.info("Creating the groupdb connection")            
-    groupDB = GroupDB(   os.environ["POSTGRES_USER"],
+    groupDB = GroupDB(os.environ["POSTGRES_USER"],
                              os.environ["POSTGRES_PASSWORD"],
                               os.environ["POSTGRES_DB"],
-                             os.environ["POSTGRES_HOSTNAME"]  )  
+                             os.environ["POSTGRES_HOSTNAME"])
     logger.info("Creating the contact db table")                      
     contactDB.createContactTable()
     logger.info("Creating the Group db table")         
