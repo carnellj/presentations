@@ -42,6 +42,8 @@ services:
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
       POSTGRES_HOSTNAME: "${POSTGRES_HOSTNAME}"
       POSTGRES_DB: "${POSTGRES_DB}"  
+      TWILIO_SID: "${TWILIO_SID}"
+      TWILIO_TOKEN: "${TWILIO_TOKEN}"
    
   contactdb:
     image: postgres:latest

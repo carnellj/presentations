@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 #@app.before_first_request
 def init_app():
-    logger.info("Initializing the contact service.")
+    logger.info("Initializing the contact service.  ")
     global contactDB
     global groupDB
     logger.info("User: {}".format(os.environ["POSTGRES_USER"]))
