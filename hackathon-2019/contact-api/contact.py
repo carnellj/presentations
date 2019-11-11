@@ -68,11 +68,31 @@ def create_contact():
     contactId  = contactDB.create( request.json["firstName"],request.json["lastName"],request.json["phone"], request.json["groupId"]) 
     return  jsonify({'contactId': contactId}), 201
 
+@app.route('/api/v1.0/rfid', methods=['POST'])
+def create_rfidUser():
+    logger.debug("Creating a contact record:  FirstName: {}. LastName: {}. Phone {}. Group Id {}".format(request.json["firstName"],request.json["lastName"],request.json["phone"], request.json["groupId"]))
+
+    rfid = rfidDB.createRfidUser( request.json["rfId"],request.json["group_id"],request.json["musicOption_id"])
+    return  jsonify({'rfid': rfid}), 201
+
 @app.route('/api/v1.0/contacts/<contactId>', methods=['GET'])
 def get_contact(contactId):
     logger.debug("Retrieve contact {} from database.".format(contactId))
     contact  = contactDB.get( contactId) 
     return  jsonify(contact), 200
+
+@app.route('/api/v1.0/rfid/<rfidCode>', methods=['GET'])
+def get_rfidEntry(rfidCode):
+    logger.debug("Retrieve rfid Entry {} from database.".format(rfidCode))
+    rfidEntry = rfidDB.getByRfid(rfidCode)
+    return jsonify(rfidEntry), 200
+
+@app.route('/api/v1.0/musicOptions/<rfidCode>', methods=['GET'])
+def get_musicFileNameByRfid(rfidCode):
+    logger.debug("Retrieve rfid Entry {} from database.".format(rfidCode))
+    musicOption = (rfidDB.getByRfid(rfidCode))["musicOption_id"]
+    fileName = musicOptionDB.getByMusicId(musicOption)
+    return jsonify(fileName), 200
 
 @app.route("/api/v1.0/contacts", methods=['GET'])
 def get_all_contacts():
@@ -84,7 +104,13 @@ def get_all_contacts():
 def get_all_groups():
    logger.info("Retrieving all groups from the /api/v1.0/groups method")
    groups =  groupDB.getAll()
-   return jsonify(groups), 200    
+   return jsonify(groups), 200
+
+@app.route("/api/v1.0/musicOptions", methods=['GET'])
+def get_all_musicOptions():
+   logger.info("Retrieving all music options from the /api/v1.0/musicOptions method")
+   musicOptions =  musicOptionDB.getAllMusicOptions()
+   return jsonify(musicOptions), 200
 
 @app.route('/api/v1.0/contacts/groups/<groupId>', methods=['GET'])
 def get_contact_by_group(groupId):
