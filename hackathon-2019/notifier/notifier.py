@@ -23,14 +23,20 @@ def get_secret(secret_name):
     except IOError:
         return None
 
-def sendVoiceCall(fromPhoneNumber, toPhoneNumber, firstName, lastName,msgText):
+def sendVoiceCall(fromPhoneNumber, toPhoneNumber, firstName, lastName,msgText, playMarch):
    client = Client(account_sid, auth_token)
    msg=quote(msgText,safe='')
+  
+   if playMarch==True:
+      myurl="https://handler.twilio.com/twiml/EHf4b0efd9b7ea4c7c3531baf5ff88e9a3?firstName={}&lastName={}&msgText='{}'&playMarch=True".format(firstName,lastName,msg,playMarch)
+   else:
+      myurl="https://handler.twilio.com/twiml/EHf4b0efd9b7ea4c7c3531baf5ff88e9a3?firstName={}&lastName={}&msgText='{}'".format(firstName,lastName,msg)
+
+
    call = client.calls.create(
     to=toPhoneNumber,
     from_=fromPhoneNumber,
-    url="https://handler.twilio.com/twiml/EHf4b0efd9b7ea4c7c3531baf5ff88e9a3?firstName={}&lastName={}&msgText='{}'".format(firstName,lastName,msg))
-
+    url=myurl)
     
 @app.route('/health/check')
 def healthCheck():
@@ -58,7 +64,7 @@ def notify():
        from_='+19206541198',
        body=message)
    
-     sendVoiceCall('+19206541198',phoneNumber,firstName,lastName,msgText)
+     sendVoiceCall('+19206541198',phoneNumber,firstName,lastName,msgText,False)
      return jsonify({"status": "call successful"}),200    
 
 if __name__ == '__main__':

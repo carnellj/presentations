@@ -24,7 +24,7 @@ def request_id():
         return flask.g.request_id
 
     headers = flask.request.headers
-    original_request_id = headers.get("tmx-correlation-Id")
+    original_request_id =   headers.get("tmx-correlation-Id")
     new_uuid = generate_request_id(original_request_id)
     flask.g.request_id = new_uuid
 
