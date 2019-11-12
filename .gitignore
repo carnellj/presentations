@@ -1,6 +1,10 @@
 
 .env
 .vscode/
-.__pycache__/
+__pycache__/
 
 .DS_Store
+/pylady-june-2018/*
+/venv/
+/.idea/
+
