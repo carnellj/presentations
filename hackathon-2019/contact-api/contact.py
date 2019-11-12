@@ -88,11 +88,11 @@ def get_rfidEntry(rfidCode):
     return jsonify(rfidEntry), 200
 
 @app.route('/api/v1.0/musicOptions/<rfidCode>', methods=['GET'])
-def get_musicFileNameByRfid(rfidCode):
+def get_musicOptionByRfid(rfidCode):
     logger.debug("Retrieve rfid Entry {} from database.".format(rfidCode))
-    musicOption = (rfidDB.getByRfid(rfidCode))["musicOption_id"]
-    fileName = musicOptionDB.getByMusicId(musicOption)
-    return jsonify(fileName), 200
+    musicOptionID = (rfidDB.getByRfid(rfidCode))["musicOption_id"]
+    musicOption = musicOptionDB.getByMusicId(musicOptionID)
+    return jsonify(musicOption), 200
 
 @app.route("/api/v1.0/contacts", methods=['GET'])
 def get_all_contacts():
