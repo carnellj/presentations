@@ -1,6 +1,9 @@
 from easygui import *
-from urllib import *
+import urllib3
 import sys
+import json
+
+http = urllib3.PoolManager()
 
 def introScreen():
     msg = "Do you want to scan an RFID?"
@@ -28,8 +31,10 @@ def rfidScreen():
 def songScreen():
     msg = "Choose your theme song"
     title = "Choose Theme Song"
-    #TODO: song choices to be retrieved via a GET request
-    songChoices = ["a", "b", "c"]
+    r = http.request('GET', 'http://localhost:5000/api/v1.0/musicOptions')
+    songs = json.loads(r.data)
+    songChoices = [x['musicTitle'] for x in songs]
+    print(f'song choices {songChoices}')
     song = choicebox(msg, title, songChoices)
 
     # make sure that none of the fields was left blank
@@ -40,8 +45,11 @@ def songScreen():
             song = choicebox(errmsg, title, songChoices)
         if errmsg == "": break # no problems found
     
-    return song
+    songId = [x['musicOption_id'] for x in songs if x['musicTitle'] == song][0]
+    return songId
 
-def postSelection(RFID, song):
-    print(f"RFID was {RFID}. Song selected was {song}.")
+def postSelection(RFID, songId):
+    data = {"rfId":RFID, "musicOption_id": songId, "group_id":""}
+    encoded_data = json.dumps(data).encode('utf-8')
+    r = http.request('POST', 'http://localhost:5000/api/v1.0/rfid', body=encoded_data, headers={'Content-Type': 'application/json'})
     return 1
