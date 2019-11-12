@@ -169,6 +169,14 @@ def loadSeedData():
     contactId = contactDB.create("Sean", "Xiao", "19193608657", groupId3)
     contactId = contactDB.create("Brad", "Segiobiano", "19194279072", groupId3)
 
+    logger.info("Loading the fourth group of data.")
+    musicOption1 = musicOptionDB.createMusicOptionEntry("Whatta Man - Salt and Pepper", "WhattaMan.mp3")
+    musicOption2 = musicOptionDB.createMusicOptionEntry("Crazy Train - Ozzy Osbourne", "CrazyTrain.mp3")
+    musicOption3 = musicOptionDB.createMusicOptionEntry("Imperial March - Star Wars", "ImperialMarch.mp3")
+    rfid = rfidDB.createRfidUser("11111111", groupId, musicOption1)
+    rfid = rfidDB.createRfidUser("22222222", groupId2, musicOption2)
+    rfid = rfidDB.createRfidUser("33333333", groupId3, musicOption3)
+
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')

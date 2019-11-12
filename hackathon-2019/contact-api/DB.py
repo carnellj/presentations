@@ -172,9 +172,9 @@ class RfidDB:
         conn = self.getConn()
         cursor = conn.cursor()
         cursor.execute("DROP TABLE IF EXISTS RfidUsers;")
-        cursor.execute("CREATE TABLE Rfid (rfid VARCHAR(100) PRIMARY KEY NOT NULL, " +
-                       "group_id  TEXT NOT NULL, " +
-                       "musicOption_id  TEXT NOT NULL); ")
+        cursor.execute("CREATE TABLE RfidUsers (rfid VARCHAR(100) PRIMARY KEY NOT NULL, " +
+                       "group_id  VARCHAR(100) NOT NULL, " +
+                       "musicOption_id VARCHAR(100) NOT NULL); ")
 
         conn.commit()
         conn.close()
@@ -216,12 +216,23 @@ class MusicOptionDB:
         conn = self.getConn()
         cursor = conn.cursor()
         cursor.execute("DROP TABLE IF EXISTS MusicOptions;")
-        cursor.execute("CREATE TABLE MusicOptions (musicOption_id VARCHAR(100) PRIMARY KEY NOT NULL, " +
+        cursor.execute("CREATE TABLE MusicOptions (musicOption_id VARCHAR(100) NOT NULL PRIMARY KEY, " +
                        "musicTitle TEXT NOT NULL, " +
                        "fileName  TEXT NOT NULL); ")
 
         conn.commit()
         conn.close()
+
+    def createMusicOptionEntry(self, musicTitle, fileName):
+        conn = self.getConn()
+        musicID = str(uuid.uuid4())
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO MusicOptions (musicOption_id, musicTitle, fileName) VALUES ((%s),(%s),(%s))",
+            (musicID, musicTitle, fileName))
+        conn.commit()
+        conn.close()
+        return musicID
 
     def getAllMusicOptions(self):
         conn = self.getConn()
