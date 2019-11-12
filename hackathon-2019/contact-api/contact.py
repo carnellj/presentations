@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 
-# @app.before_first_request
-def init_app():
+@app.before_first_request
+def initializeConnections():
     logger.info("Initializing the contact service.  ")
     global contactDB
     global groupDB
@@ -44,6 +44,9 @@ def init_app():
                                   os.environ["POSTGRES_PASSWORD"],
                                   os.environ["POSTGRES_DB"],
                                   os.environ["POSTGRES_HOSTNAME"])
+
+
+def init_app():
     logger.info("Creating the contact db table")
     contactDB.createContactTable()
     logger.info("Creating the Group db table")
