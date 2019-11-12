@@ -70,7 +70,7 @@ def create_contact():
 
 @app.route('/api/v1.0/rfid', methods=['POST'])
 def create_rfidUser():
-    logger.debug("Creating a contact record:  FirstName: {}. LastName: {}. Phone {}. Group Id {}".format(request.json["firstName"],request.json["lastName"],request.json["phone"], request.json["groupId"]))
+    logger.debug("Creating a rfid record:  RFID code: {}. GroupID: {}. MusicOption {}".format(request.json["rfId"],request.json["group_id"],request.json["musicOption_id"]))
 
     rfid = rfidDB.createRfidUser( request.json["rfId"],request.json["group_id"],request.json["musicOption_id"])
     return  jsonify({'rfid': rfid}), 201
