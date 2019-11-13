@@ -195,16 +195,20 @@ def loadSeedData():
     contactId = contactDB.create("Christopher", "Carnell", "19842425143", groupId)
 
     logger.info("Loading the second piece of group data.")
-    groupId2 = groupDB.create("Schneider Trucking", "Schneider Trucking Executive Leadership Group")
-    contactId = contactDB.create("Mike", "Mckhehan", "19202651555", groupId2)
-    contactId = contactDB.create("Dan", "Goerdt", "19202652322", groupId2)
+    groupId2 = groupDB.create("DevOps", "DevOps")
+    contactId = contactDB.create("Brad", "Segiobiano", "19194279072", groupId2)
+    contactId = contactDB.create("David", "Lightcap", "16103891467", groupId2)
+    contactId = contactDB.create("Lew", "Gordon", "19195793652", groupId2)
+    contactId = contactDB.create("Tim", "Hawes", "19196562135", groupId2)
+    contactId = contactDB.create("Kal", "Patel", "14343861810", groupId2)
+    contactId = contactDB.create("Steve", "Woolley", "13179571761", groupId2)
 
     logger.info("Loading the third group of data.")
-    groupId3 = groupDB.create("Schneider Trucking", "Edge Infrastructure Room")
+    groupId3 = groupDB.create("John's Test Group", "John's Test Group")
     contactId = contactDB.create("John", "Carnell", "19202651560", groupId3)
     contactId = contactDB.create("Aidan", "Zimmermann", "19194411544", groupId3)
     contactId = contactDB.create("Sean", "Xiao", "19193608657", groupId3)
-    contactId = contactDB.create("Brad", "Segiobiano", "19194279072", groupId3)
+    
 
     logger.info("Loading the fourth group of data.")
     musicOption1 = musicOptionDB.createMusicOptionEntry("Whatta Man - Salt and Pepper", "Whataman.mp3")
@@ -218,16 +222,16 @@ def loadSeedData():
     musicOption9 = musicOptionDB.createMusicOptionEntry("Iron Man - Black Sabbath", "Ironman.mp3")
     musicOption10 = musicOptionDB.createMusicOptionEntry("Symphony No.5 - Beethoven", "Beethoven5.mp3")
     musicOption11 = musicOptionDB.createMusicOptionEntry("Earfquake - Tyler the Creator", "Earfquake.mp3")
-    musicOption12 = musicOptionDB.createMusicOptionEntry("John Cena Theme Song", "Cenatheme.mp3")
+    musicOption12 = musicOptionDB.createMusicOptionEntry("J ohn Cena Theme Song", "Cenatheme.mp3")
 
     rfid = rfidDB.createRfidUser("11111111", groupId, musicOption1)
     rfid = rfidDB.createRfidUser("22222222", groupId2, musicOption2)
     rfid = rfidDB.createRfidUser("33333333", groupId3, musicOption3)
     rfid = rfidDB.createRfidUser("3099822457", "", musicOption4) #brent
-    rfid = rfidDB.createRfidUser("3699974525", "", musicOption1) #john
+    rfid = rfidDB.createRfidUser("3699974525", groupId3, musicOption1) #john
     rfid = rfidDB.createRfidUser("3699974493", "", musicOption7) #lance
     rfid = rfidDB.createRfidUser("3699974461", "", musicOption2) #kal
-    rfid = rfidDB.createRfidUser("3699976189", groupId3, musicOption5) #brad
+    rfid = rfidDB.createRfidUser("3699976189", groupId2, musicOption5) #brad
     rfid = rfidDB.createRfidUser("3699976125", "", musicOption6)  #eric
     rfid = rfidDB.createRfidUser("3699936861", "", musicOption11)  #sean
     rfid = rfidDB.createRfidUser("3699687133", "", musicOption12)  #jake
