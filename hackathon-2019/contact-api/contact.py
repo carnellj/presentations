@@ -135,6 +135,13 @@ def get_all_musicOptions():
     musicOptions = musicOptionDB.getAllMusicOptions()
     return jsonify(musicOptions), 200
 
+@app.route("/api/v1.0/musicOptions", methods=['POST'])
+def create_musicOption():
+    logger.debug("Creating a Music Option record: musicTitle: {}. fileName {}".format(request.json["musicTitle"],
+                                                                                      request.json["fileName"]))
+    musicOptionID = musicOptionDB.createMusicOptionEntry(request.json["musicTitle"], request.json["fileName"])
+    return jsonify(musicOptionID), 200
+
 
 @app.route('/api/v1.0/contacts/groups/<groupId>', methods=['GET'])
 def get_contact_by_group(groupId):
