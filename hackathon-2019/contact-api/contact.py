@@ -217,6 +217,9 @@ def loadSeedData():
     musicOption8 = musicOptionDB.createMusicOptionEntry("Shaft Theme Song - Issac Hayes", "ShaftA.mp3")
     musicOption9 = musicOptionDB.createMusicOptionEntry("Iron Man - Black Sabbath", "Ironman.mp3")
     musicOption10 = musicOptionDB.createMusicOptionEntry("Symphony No.5 - Beethoven", "Beethoven5.mp3")
+    musicOption11 = musicOptionDB.createMusicOptionEntry("Earfquake - Tyler the Creator", "Earfquake.mp3")
+    musicOption12 = musicOptionDB.createMusicOptionEntry("John Cena Theme Song", "Cenatheme.mp3")
+
     rfid = rfidDB.createRfidUser("11111111", groupId, musicOption1)
     rfid = rfidDB.createRfidUser("22222222", groupId2, musicOption2)
     rfid = rfidDB.createRfidUser("33333333", groupId3, musicOption3)
@@ -226,6 +229,8 @@ def loadSeedData():
     rfid = rfidDB.createRfidUser("3699974461", "", musicOption2) #kal
     rfid = rfidDB.createRfidUser("3699976189", groupId3, musicOption5) #brad
     rfid = rfidDB.createRfidUser("3699976125", "", musicOption6)  #eric
+    rfid = rfidDB.createRfidUser("3699936861", "", musicOption11)  #sean
+    rfid = rfidDB.createRfidUser("3699687133", "", musicOption12)  #jake
 
     groupId4 = groupDB.create("Testing ", "Testing Group")
     rfid = rfidDB.createRfidUser("77777777", groupId4, musicOption1)
