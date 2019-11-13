@@ -117,7 +117,7 @@ def get_musicOptionByRfid(rfidCode):
 
 @app.route("/api/v1.0/contacts", methods=['GET'])
 def get_all_contacts():
-    logger.debug("Retrieving al contacts in the database")
+    logger.debug("Retrieving al co94ntacts in the database")
     contacts = contactDB.getAll()
     return jsonify(contacts), 200
 
@@ -200,12 +200,25 @@ def loadSeedData():
     contactId = contactDB.create("Brad", "Segiobiano", "19194279072", groupId3)
 
     logger.info("Loading the fourth group of data.")
-    musicOption1 = musicOptionDB.createMusicOptionEntry("Whatta Man - Salt and Pepper", "WhattaMan.mp3")
-    musicOption2 = musicOptionDB.createMusicOptionEntry("Crazy Train - Ozzy Osbourne", "CrazyTrain.mp3")
-    musicOption3 = musicOptionDB.createMusicOptionEntry("Imperial March - Star Wars", "ImperialMarch.mp3")
+    musicOption1 = musicOptionDB.createMusicOptionEntry("Whatta Man - Salt and Pepper", "Whataman.mp3")
+    musicOption2 = musicOptionDB.createMusicOptionEntry("Crazy Train - Ozzy Osbourne", "Crazytrain.mp3")
+    musicOption3 = musicOptionDB.createMusicOptionEntry("Imperial March - Star Wars", "Imperialmarch.mp3")
+    musicOption4 = musicOptionDB.createMusicOptionEntry("Super Bon Bon - Sour Coughing", "Bonbon.mp3")
+    musicOption5 = musicOptionDB.createMusicOptionEntry("Circle of Life - Lion King", "Circleoflife.mp3")
+    musicOption6 = musicOptionDB.createMusicOptionEntry("Hang Up Your Hangups - Herbie Hancock", "Hangups.mp3")
+    musicOption7 = musicOptionDB.createMusicOptionEntry("Stayin' Alive - Bee Gees", "Stayinalive.mp3")
+    musicOption8 = musicOptionDB.createMusicOptionEntry("Shaft Theme Song - Issac Hayes", "ShaftA.mp3")
+    musicOption9 = musicOptionDB.createMusicOptionEntry("Iron Man - Black Sabbath", "Ironman.mp3")
+    musicOption10 = musicOptionDB.createMusicOptionEntry("Symphony No.5 - Beethoven", "Beethoven5.mp3")
     rfid = rfidDB.createRfidUser("11111111", groupId, musicOption1)
     rfid = rfidDB.createRfidUser("22222222", groupId2, musicOption2)
     rfid = rfidDB.createRfidUser("33333333", groupId3, musicOption3)
+    rfid = rfidDB.createRfidUser("3099822457", "", musicOption4) #brent
+    rfid = rfidDB.createRfidUser("3699974525", "", musicOption1) #john
+    rfid = rfidDB.createRfidUser("3699974493", "", musicOption7) #lance
+    rfid = rfidDB.createRfidUser("3699974461", "", musicOption2) #kal
+    rfid = rfidDB.createRfidUser("3699976189", groupId3, musicOption5) #brad
+    rfid = rfidDB.createRfidUser("3699976125", "", musicOption6)  #eric
 
     groupId4 = groupDB.create("Testing ", "Testing Group")
     rfid = rfidDB.createRfidUser("77777777", groupId4, musicOption1)
