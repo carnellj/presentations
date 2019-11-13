@@ -171,7 +171,7 @@ class RfidDB:
         cursor = conn.cursor()
         cursor.execute("DROP TABLE IF EXISTS RfidUsers;")
         cursor.execute("CREATE TABLE RfidUsers (rfid VARCHAR(100) PRIMARY KEY NOT NULL, " +
-                       "group_id  VARCHAR(100) NOT NULL, " +
+                       "group_id VARCHAR(100), " +
                        "musicOption_id VARCHAR(100) NOT NULL); ")
 
         conn.commit()

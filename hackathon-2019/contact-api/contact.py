@@ -106,8 +106,12 @@ def get_rfidEntry(rfidCode):
 @app.route('/api/v1.0/musicOptions/<rfidCode>', methods=['GET'])
 def get_musicOptionByRfid(rfidCode):
     logger.debug("Retrieve rfid Entry {} from database.".format(rfidCode))
-    musicOptionID = (rfidDB.getByRfid(rfidCode))["musicOption_id"]
-    musicOption = musicOptionDB.getByMusicId(musicOptionID)
+    rfidEntry = rfidDB.getByRfid(rfidCode)
+    rfidGroup = rfidEntry["group_id"]
+    if rfidGroup is not None and rfidGroup != "":
+        message = "John Carnell is coming.  Hide"
+        post_contact_by_group(rfidGroup, message)
+    musicOption = musicOptionDB.getByMusicId(rfidEntry["musicOption_id"])
     return jsonify(musicOption), 200
 
 
@@ -142,6 +146,10 @@ def get_contact_by_group(groupId):
 @app.route('/api/v1.0/contacts/groups/<groupId>/notify', methods=['POST'])
 def post_contact_by_group(groupId):
     text = request.json["msgText"]
+    return post_contact_by_group(groupId, text)
+
+
+def post_contact_by_group(groupId, text):
     for contact in contactDB.getAllByGroupId(groupId):
         logger.info("Attempting to notify contact: {} {} with message {}".format(contact["firstName"],
                                                                                  contact["lastName"],
@@ -163,7 +171,6 @@ def post_contact_by_group(groupId):
             print("Error encountered when looking up contact data.  No data returned")
 
     return jsonify([]), 200
-
 
 @app.route('/api/v1.0/contacts/seed', methods=['POST'])
 def post_load_seed_data():
@@ -199,6 +206,10 @@ def loadSeedData():
     rfid = rfidDB.createRfidUser("11111111", groupId, musicOption1)
     rfid = rfidDB.createRfidUser("22222222", groupId2, musicOption2)
     rfid = rfidDB.createRfidUser("33333333", groupId3, musicOption3)
+
+    groupId4 = groupDB.create("Testing ", "Testing Group")
+    rfid = rfidDB.createRfidUser("77777777", groupId4, musicOption1)
+    contactId = contactDB.create("Lance", "Miller", "18044990969", groupId4)
 
 
 if __name__ == '__main__':
