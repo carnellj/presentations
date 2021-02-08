@@ -1,2 +1,2 @@
 Flask===0.12.2
-httplib2===0.10.3
+httplib2===0.19.0
